@@ -5,13 +5,23 @@ const addMovieModal = document.getElementById("add-modal");
 const startAddMovieButton = document.getElementById("add-movie-btn");
 const backdrop = document.getElementById("backdrop");
 
+// for use this backdrop another place also i will create a function
+const toggleBackdrop = ()=>{
+    backdrop.classList.toggle('visible');
+} 
+
 
 const toggleMovieModal = ()=>{
 
     addMovieModal.classList.toggle('visible');
-    backdrop.classList.toggle('visible');
+    toggleBackdrop();
 
     console.log("movie modal worked");
 };
 
+const backdropClickHandler = ()=>{
+    toggleMovieModal();
+}
+
 startAddMovieButton.addEventListener("click",toggleMovieModal);
+backdrop.addEventListener("click",backdropClickHandler);

@@ -30,7 +30,15 @@ const backdropClickHandler = () => {
 
 const cancleMovieHandler = () => {
   toggleMovieModal();
+  clearMovieInputs();
 };
+
+const clearMovieInputs = ()=>{
+    // userInputs[0] = ''; // this Approch is also work but i use hare for of loop
+    for (const userInput of userInputs){
+        userInput.value = ''
+    }
+}
 
 const addMovieHandler = () => {
   const titleValues = userInputs[0].value; // hare userInputs[0] means access the first input box
@@ -56,6 +64,7 @@ const addMovieHandler = () => {
   movieStorage.push(newMovie); // hare i push new movie object in movieStorege array
   console.log(movieStorage);
   toggleMovieModal();
+  clearMovieInputs();
 };
 
 startAddMovieButton.addEventListener("click", toggleMovieModal);

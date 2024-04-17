@@ -8,6 +8,10 @@ const cancleAddMovieButton = document.querySelector(".btn--passive");
 const confirmAddMovieButton = cancleAddMovieButton.nextElementSibling; // hare i user dom traversal technique
 const userInputs = addMovieModal.querySelectorAll("input"); // it's gives me all these inputs hare in an array like object(in such a node list)
 
+// hare i want to add objects to that array where each object represent a movie
+const movieStorage = [];
+
+
 // for use this backdrop another place also i will create a function
 const toggleBackdrop = () => {
   backdrop.classList.toggle("visible");
@@ -40,8 +44,18 @@ const addMovieHandler = () => {
     +ratingValue < 1 ||
     +ratingValue > 5
   ) {
-    alert("please enter valid values (reating between 1 to 5)")
+    alert("please enter valid values (reating between 1 to 5)");
+    return;
   }
+
+  const newMovie = {
+    title : titleValues,
+    imageUrl : imageUrlValue,
+    rating : ratingValue
+  };
+  movieStorage.push(newMovie); // hare i push new movie object in movieStorege array
+  console.log(movieStorage);
+  toggleMovieModal();
 };
 
 startAddMovieButton.addEventListener("click", toggleMovieModal);

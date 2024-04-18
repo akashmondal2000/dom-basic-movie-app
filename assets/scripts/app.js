@@ -13,6 +13,12 @@ const entryTextSection = document.getElementById("entry-text");
 // hare i want to add objects to that array where each object represent a movie
 const movieStorage = [];
 
+// for use this backdrop another place also i will create a function
+const toggleBackdrop = () => {
+  backdrop.classList.toggle("visible");
+};
+
+
 const updateUi = () => {
   if (movieStorage.length === 0) {
     entryTextSection.style.display = "block";
@@ -21,7 +27,12 @@ const updateUi = () => {
   }
 };
 
-const deleteMovie = (movieId) => {
+const closeMovieDeletionModal = ()=>{
+  toggleBackdrop();
+  deleteMovieModal.classList.remove('visible');
+}
+
+const deleteMovieHandler = movieId => {
   let movieIndex = 0;
   for (const movie of movieStorage) {
     if (movie.id === movieId) {
@@ -33,18 +44,27 @@ const deleteMovie = (movieId) => {
   const rootElement = document.getElementById("movie-list");
   rootElement.children[movieIndex].remove();
   // rootElement.removeChild( children[movieIndex]); // alternative way
+  closeMovieDeletionModal();
+  updateUi();
 };
 
-const closeMovieDeletionModal = ()=>{
-  toggleBackdrop();
-  deleteMovieModal.classList.remove('visible');
-}
 
-const deleteMovieHandler = (movieId) => {
+
+const startDeleteMovieHandler = movieId => {
   
   deleteMovieModal.classList.add("visible");
   toggleBackdrop();
   // deleteMovie(movieId);
+  const cancleDeletionButton = deleteMovieModal.querySelector(".btn--passive");
+  let confirmDeletionButton = deleteMovieModal.querySelector(".btn--danger");
+
+  confirmDeletionButton.replaceWith(confirmDeletionButton.cloneNode(true));
+  confirmDeletionButton = deleteMovieModal.querySelector(".btn--danger");
+
+  cancleDeletionButton.removeEventListener("click",closeMovieDeletionModal);
+
+  cancleDeletionButton.addEventListener('click',closeMovieDeletionModal);
+  confirmDeletionButton.addEventListener('click',deleteMovieHandler.bind(null,movieId));
 };
 
 const renderNewMovieElement = (id, title, imageUrl, rating) => {
@@ -59,16 +79,12 @@ const renderNewMovieElement = (id, title, imageUrl, rating) => {
     <p>${rating}/5</p>
   </div>
   `;
-  newMovieElement.addEventListener("click", deleteMovieHandler.bind(null, id));
+  newMovieElement.addEventListener("click", startDeleteMovieHandler.bind(null, id));
 
   const rootElement = document.getElementById("movie-list");
   rootElement.append(newMovieElement);
 };
 
-// for use this backdrop another place also i will create a function
-const toggleBackdrop = () => {
-  backdrop.classList.toggle("visible");
-};
 
 const closeMovieModal = () => {
   addMovieModal.classList.remove("visible");
@@ -81,13 +97,10 @@ const showMovieModal = () => {
   console.log("movie modal worked");
 };
 
-const backdropClickHandler = () => {
-  closeMovieModal();
-  closeMovieDeletionModal();
-};
 
 const cancleMovieHandler = () => {
   closeMovieModal();
+  toggleBackdrop();
   clearMovieInputs();
 };
 
@@ -133,6 +146,13 @@ const addMovieHandler = () => {
   );
   updateUi();
 };
+
+const backdropClickHandler = () => {
+  closeMovieModal();
+  closeMovieDeletionModal();
+  clearMovieInputs();
+};
+
 
 startAddMovieButton.addEventListener("click", showMovieModal);
 backdrop.addEventListener("click", backdropClickHandler);

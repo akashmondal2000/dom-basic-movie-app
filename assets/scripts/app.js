@@ -7,7 +7,7 @@ const backdrop = document.getElementById("backdrop");
 const cancleAddMovieButton = document.querySelector(".btn--passive");
 const confirmAddMovieButton = cancleAddMovieButton.nextElementSibling; // hare i user dom traversal technique
 const userInputs = addMovieModal.querySelectorAll("input"); // it's gives me all these inputs hare in an array like object(in such a node list)
-
+const deleteMovieModal = document.getElementById("delete-modal");
 const entryTextSection = document.getElementById("entry-text");
 
 // hare i want to add objects to that array where each object represent a movie
@@ -21,24 +21,36 @@ const updateUi = () => {
   }
 };
 
-const deleteMovieHandler = (movieId) =>{
+const deleteMovie = (movieId) => {
   let movieIndex = 0;
-  for (const movie of movieStorage){
-    if(movie.id === movieId){
+  for (const movie of movieStorage) {
+    if (movie.id === movieId) {
       break;
     }
     movieIndex++;
   }
-  movieStorage.splice(movieIndex,1);
-  const rootElement = document.getElementById('movie-list');
+  movieStorage.splice(movieIndex, 1);
+  const rootElement = document.getElementById("movie-list");
   rootElement.children[movieIndex].remove();
   // rootElement.removeChild( children[movieIndex]); // alternative way
+};
+
+const closeMovieDeletionModal = ()=>{
+  toggleBackdrop();
+  deleteMovieModal.classList.remove('visible');
 }
 
-const renderNewMovieElement = (id,title,imageUrl,rating)=>{
-  const newMovieElement = document.createElement('li');
-  newMovieElement.className = 'movie-element';
-  newMovieElement.innerHTML =`
+const deleteMovieHandler = (movieId) => {
+  
+  deleteMovieModal.classList.add("visible");
+  toggleBackdrop();
+  // deleteMovie(movieId);
+};
+
+const renderNewMovieElement = (id, title, imageUrl, rating) => {
+  const newMovieElement = document.createElement("li");
+  newMovieElement.className = "movie-element";
+  newMovieElement.innerHTML = `
   <div class = "movie-element__image">
     <img src= ${imageUrl} alt=${title}>
   </div>
@@ -47,31 +59,35 @@ const renderNewMovieElement = (id,title,imageUrl,rating)=>{
     <p>${rating}/5</p>
   </div>
   `;
-  newMovieElement.addEventListener('click',deleteMovieHandler.bind(null,id));
+  newMovieElement.addEventListener("click", deleteMovieHandler.bind(null, id));
 
-  const rootElement = document.getElementById('movie-list');
+  const rootElement = document.getElementById("movie-list");
   rootElement.append(newMovieElement);
-
-}
+};
 
 // for use this backdrop another place also i will create a function
 const toggleBackdrop = () => {
   backdrop.classList.toggle("visible");
 };
 
-const toggleMovieModal = () => {
-  addMovieModal.classList.toggle("visible");
+const closeMovieModal = () => {
+  addMovieModal.classList.remove("visible");
+};
+
+const showMovieModal = () => {
+  addMovieModal.classList.add("visible");
   toggleBackdrop();
 
   console.log("movie modal worked");
 };
 
 const backdropClickHandler = () => {
-  toggleMovieModal();
+  closeMovieModal();
+  closeMovieDeletionModal();
 };
 
 const cancleMovieHandler = () => {
-  toggleMovieModal();
+  closeMovieModal();
   clearMovieInputs();
 };
 
@@ -106,13 +122,19 @@ const addMovieHandler = () => {
   };
   movieStorage.push(newMovie); // hare i push new movie object in movieStorege array
   console.log(movieStorage);
-  toggleMovieModal();
+  closeMovieModal();
+  toggleBackdrop();
   clearMovieInputs();
-  renderNewMovieElement(newMovie.id,newMovie.title,newMovie.imageUrl,newMovie.rating);
+  renderNewMovieElement(
+    newMovie.id,
+    newMovie.title,
+    newMovie.imageUrl,
+    newMovie.rating
+  );
   updateUi();
 };
 
-startAddMovieButton.addEventListener("click", toggleMovieModal);
+startAddMovieButton.addEventListener("click", showMovieModal);
 backdrop.addEventListener("click", backdropClickHandler);
 cancleAddMovieButton.addEventListener("click", cancleMovieHandler);
 confirmAddMovieButton.addEventListener("click", addMovieHandler);
